@@ -1,0 +1,7 @@
+Flask==3.0.3
+rclpy==3.3.13
+geometry-msgs==4.2.4
+sensor-msgs==4.2.4
+action-msgs==1.2.1
+std-msgs==4.2.4
+pytest

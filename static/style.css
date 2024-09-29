@@ -1,0 +1,140 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;600&display=swap');
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #e6f2ff;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    max-width: 600px;
+    margin: 50px auto;
+    padding: 25px;
+    background-color: #f0f8ff;
+    border-radius: 25px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    border: 2px solid #66b3ff;
+    transition: transform 0.3s ease-in-out;
+}
+
+.container:hover {
+    transform: scale(1.02);
+}
+
+.title {
+    font-size: 28px;
+    text-align: center;
+    margin-bottom: 20px;
+    color: #3399ff;
+}
+
+.score {
+    font-size: 22px;
+    text-align: center;
+    margin-bottom: 15px;
+    color: #6699cc;
+}
+
+.controls {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.styled-button {
+    background-color: #66b3ff;
+    color: white;
+    padding: 12px 25px;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    font-size: 18px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.styled-button:hover {
+    background-color: #3399ff;
+    transform: scale(1.05);
+}
+
+.answer-input {
+    width: calc(100% - 20px);
+    padding: 12px;
+    font-size: 18px;
+    margin: 10px 0;
+    border: 2px solid #66b3ff;
+    border-radius: 8px;
+    box-shadow: inset 0 3px 8px rgba(0, 0, 0, 0.1);
+}
+
+.problem-text p {
+    font-weight: bold;
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+.result-message {
+    font-size: 32px;
+    font-weight: bold;
+    margin-top: 20px;
+    display: block;
+    animation: pop-in 0.5s ease-in-out;
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.correct {
+    color: #66ff66;
+    animation: pulse 1s infinite;
+}
+
+.incorrect {
+    color: #ff6666;
+    animation: shake 0.5s;
+}
+
+@keyframes pop-in {
+    0% {
+        transform: scale(0.5);
+        opacity: 0;
+    }
+
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.1);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+@keyframes shake {
+
+    0%,
+    100% {
+        transform: translateX(0);
+    }
+
+    25% {
+        transform: translateX(-10px);
+    }
+
+    75% {
+        transform: translateX(10px);
+    }
+}
+
+#result {
+    text-align: center;
+    margin-top: 20px;
+}
