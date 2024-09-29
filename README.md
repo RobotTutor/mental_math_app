@@ -1,5 +1,7 @@
 This app dynamically generates math problems, adjusts difficulty based on performance, and interfaces with a robot using **ROS2**.
 
+![Frontend](static/images/frontend.png)
+
 ## Features
 
 - Dynamic math problem generation (addition, subtraction, multiplication).
