@@ -1,0 +1,20 @@
+{
+    "total_questions": 1,
+    "correct_answers": 1,
+    "incorrect_answers": 0,
+    "trick_views": 0,
+    "answers_per_difficulty": {
+        "2": {
+            "correct": 1,
+            "incorrect": 0
+        },
+        "3": {
+            "correct": 0,
+            "incorrect": 0
+        }
+    },
+    "recommendations": {
+        "focus_on": "Keep practicing",
+        "message": "You are doing well! Keep practicing to master all levels."
+    }
+}

@@ -1,15 +1,13 @@
 document.addEventListener("DOMContentLoaded", function () {
     const submitButton = document.getElementById("submit-btn");
     const showTrickButton = document.getElementById("show-trick-btn");
-    const problemText = document.getElementById("problem-text");
-    const answerInput = document.getElementById("answer");
     const resultText = document.getElementById("result");
     const trickText = document.getElementById("trick");
     const scoreText = document.getElementById("score");
 
     submitButton.addEventListener("click", function (event) {
         event.preventDefault();
-        const answer = answerInput.value;
+        const answer = document.getElementById("answer").value;
 
         fetch('/submit', {
             method: 'POST',
@@ -17,46 +15,50 @@ document.addEventListener("DOMContentLoaded", function () {
                 'Content-Type': 'application/x-www-form-urlencoded',
             },
             body: new URLSearchParams({
-                'answer': answer,
-                'correct_answer': document.querySelector('input[name="correct_answer"]').value
+                'answer': answer
             })
         })
             .then(response => response.json())
             .then(data => {
-                resultText.innerHTML = `<span class="result-message">${data.result}</span>`;
+                resultText.innerHTML = `<p>${data.result}</p>`;
                 scoreText.innerHTML = `Score: ${data.score}`;
-                problemText.innerHTML = `<h3>Math Problem:</h3><p>${data.question}</p>`;
-                answerInput.value = '';
+                document.getElementById('problem-text').innerHTML = `<p>${data.question}</p>`;
                 document.querySelector('input[name="correct_answer"]').value = data.correct_answer;
-
-                if (data.result.includes("Correct")) {
-                    resultText.classList.add("correct");
-                    resultText.classList.remove("incorrect");
-                } else {
-                    resultText.classList.add("incorrect");
-                    resultText.classList.remove("correct");
-                }
-            })
-            .catch(error => console.error('Error submitting answer:', error));
+            });
     });
 
     showTrickButton.addEventListener("click", function () {
         fetch('/get_trick', { method: 'GET' })
-            .then(response => response.json())
-            .then(data => {
-                trickText.innerHTML = `<p>${data.trick}</p>`;
-                animateTrick();
-            })
-            .catch(error => console.error('Error fetching trick:', error));
-    });
-
-    function animateTrick() {
-        anime({
-            targets: '#trick p',
-            translateY: [50, 0],
-            opacity: [0, 1],
-            duration: 800,
-            easing: 'easeOutElastic'
+        .then(response => response.json())
+        .then(data => {
+            const trickText = document.getElementById('trick');
+            
+            trickText.innerHTML = `
+                <p class="step">1. ${data.trick.step1}</p>
+                <p class="step">2. ${data.trick.step2}</p>
+                <p class="step">3. ${data.trick.step3}</p>
+                <p class="step">4. ${data.trick.step4}</p>
+            `;
+            
+            // Add a fun animation for the trick explanation
+            anime({
+                targets: '#trick .step',
+                translateY: [50, 0],
+                opacity: [0, 1],
+                duration: 800,
+                delay: anime.stagger(200),
+                easing: 'easeOutElastic'
+            });
         });
-    }
+});
+
+    // Fetch and display recommendations
+    fetch('/get_recommendations')
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('recommendations').innerHTML = `
+                <h4>Training Focus</h4>
+                <p>${data.message}</p>
+            `;
+        });
 });
