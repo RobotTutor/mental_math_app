@@ -10,8 +10,8 @@ app = Flask(__name__, static_folder='../static', template_folder='../templates')
 score = 0
 difficulty = 1
 correct_answer = None
+current_trick = None
 
-# ROS2 Node for publishing to /face_state
 class MathPublisher(Node):
     def __init__(self):
         super().__init__('math_publisher')
@@ -25,27 +25,35 @@ class MathPublisher(Node):
 rclpy.init()
 ros_node = MathPublisher()
 
-def generate_question(difficulty_level):
-    global correct_answer
+def generate_question_and_trick(difficulty_level):
+    global correct_answer, current_trick
     if difficulty_level == 1:
         num1 = random.randint(1, 10)
         num2 = random.randint(1, 10)
+        question = f"{num1} + {num2}"
+        correct_answer = str(eval(question))
+        current_trick = f"Trick: To add numbers close to 10, round them. Turn {num1} into 10 and subtract the difference from {num2}."
+    
     elif difficulty_level == 2:
         num1 = random.randint(10, 50)
         num2 = random.randint(10, 50)
+        question = f"{num1} * {num2}"
+        correct_answer = str(eval(question))
+        current_trick = f"Trick: Break {num1} * {num2} into smaller parts using distributive property. Break it into ({num1 // 10} * 10 + {num1 % 10}) * ({num2 // 10} * 10 + {num2 % 10})."
+    
     else:
         num1 = random.randint(50, 100)
         num2 = random.randint(50, 100)
-
-    operation = random.choice(['+', '-', '*'])
-    question = f"{num1} {operation} {num2}"
-    correct_answer = str(eval(question))
-    return question, correct_answer
+        question = f"{num1} - {num2}"
+        correct_answer = str(eval(question))
+        current_trick = f"Trick: Round both numbers. Round {num1} to {num1 + (10 - num1 % 10)} and {num2} to {num2 + (10 - num2 % 10)}."
+    
+    return question, correct_answer, current_trick
 
 @app.route('/')
 def index():
     global difficulty
-    question, correct_answer = generate_question(difficulty)
+    question, correct_answer, current_trick = generate_question_and_trick(difficulty)
     return render_template('index.html', question=question, correct_answer=correct_answer, score=score)
 
 @app.route('/submit', methods=['POST'])
@@ -55,14 +63,14 @@ def submit_answer():
 
     if answer == correct_answer:
         if difficulty == 1:
-            score += 1  # 1 point for easy
+            score += 1
         elif difficulty == 2:
-            score += 2  # 2 points for medium
+            score += 2
         else:
-            score += 3  # 3 points for hard
-
+            score += 3
+        
         if score % 3 == 0 and difficulty < 3:
-            difficulty += 1 
+            difficulty += 1
         result = 'Correct! 😊'
     else:
         score = max(0, score - 1)
@@ -70,8 +78,7 @@ def submit_answer():
             difficulty -= 1
         result = 'Incorrect! 😢'
 
-    # Generate a new question for the next round
-    question, correct_answer = generate_question(difficulty)
+    question, correct_answer, current_trick = generate_question_and_trick(difficulty)
     
     return jsonify({
         'result': result,
@@ -80,6 +87,10 @@ def submit_answer():
         'question': question,
         'correct_answer': correct_answer
     })
+
+@app.route('/get_trick', methods=['GET'])
+def get_trick():
+    return jsonify({'trick': current_trick})
 
 @app.route('/reset')
 def reset():

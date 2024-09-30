@@ -1,8 +1,10 @@
 document.addEventListener("DOMContentLoaded", function () {
     const submitButton = document.getElementById("submit-btn");
+    const showTrickButton = document.getElementById("show-trick-btn");
     const problemText = document.getElementById("problem-text");
     const answerInput = document.getElementById("answer");
     const resultText = document.getElementById("result");
+    const trickText = document.getElementById("trick");
     const scoreText = document.getElementById("score");
 
     submitButton.addEventListener("click", function (event) {
@@ -37,4 +39,24 @@ document.addEventListener("DOMContentLoaded", function () {
             })
             .catch(error => console.error('Error submitting answer:', error));
     });
+
+    showTrickButton.addEventListener("click", function () {
+        fetch('/get_trick', { method: 'GET' })
+            .then(response => response.json())
+            .then(data => {
+                trickText.innerHTML = `<p>${data.trick}</p>`;
+                animateTrick();
+            })
+            .catch(error => console.error('Error fetching trick:', error));
+    });
+
+    function animateTrick() {
+        anime({
+            targets: '#trick p',
+            translateY: [50, 0],
+            opacity: [0, 1],
+            duration: 800,
+            easing: 'easeOutElastic'
+        });
+    }
 });

@@ -12,18 +12,15 @@
     <div class="container">
         <h1 class="title">Mental Math Challenge</h1>
 
-        <!-- Display the current score -->
         <div class="score">
             <h3>Your Score: <span id="score">Score: {{ score }}</span></h3>
         </div>
 
-        <!-- Display generated problem here -->
         <div id="problem-text" class="problem-text">
             <h3>Math Problem:</h3>
             <p>{{ question }}</p>
         </div>
 
-        <!-- Input field for submitting an answer -->
         <form class="controls">
             <input type="hidden" name="correct_answer" value="{{ correct_answer }}">
             <input type="text" id="answer" name="answer" placeholder="Enter your answer" class="answer-input"
@@ -31,18 +28,22 @@
             <button type="submit" id="submit-btn" class="styled-button">Submit Answer</button>
         </form>
 
-        <!-- Reset button to restart the game -->
+        <div class="controls">
+            <button id="show-trick-btn" class="styled-button">Show Trick</button>
+        </div>
+
+        <div id="trick" class="trick"></div>
+
         <div class="controls">
             <form action="/reset" method="GET">
                 <button type="submit" class="styled-button">Reset Game</button>
             </form>
         </div>
 
-        <!-- Display result (correct/incorrect) here -->
         <div id="result"></div>
     </div>
 
-    <!-- Link to the frontend JavaScript -->
+    <script src="{{ url_for('static', filename='anime.min.js') }}"></script>
     <script src="{{ url_for('static', filename='app.js') }}"></script>
 </body>
 
