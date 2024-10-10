@@ -1,0 +1,4 @@
+__pycache__/
+venv/
+user_data.json
+src/user_data.json
