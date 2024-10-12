@@ -2,6 +2,8 @@ import random
 from flask import Flask, render_template, request, jsonify, redirect, url_for
 import json
 import time
+import requests  # Add the requests module
+import socket
 
 app = Flask(__name__, template_folder='../templates', static_folder='../static')
 
@@ -15,6 +17,27 @@ user_start_time = None  # Track the start time for each question
 question_category = 'simple_division'  # Default category
 
 
+# Function to send result to external IP
+def send_result_to_ip(result):
+    ip_address = '192.168.0.101'  # IP address of the receiver
+    port = 65432  # Port that the receiver is listening on
+
+    try:
+        # Create a socket object
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+            # Connect to the receiver
+            s.connect((ip_address, port))
+            # Send the result (convert to bytes before sending)
+            s.sendall(str(result).encode())
+
+            # Optionally, receive an echo response from the server
+            data = s.recv(1024)
+            print(f"Received echo: {data.decode()}")
+
+    except Exception as e:
+        print(f"Error sending result to {ip_address}: {e}")
+
+
 @app.route('/submit', methods=['POST'])
 def submit_answer():
     global score, difficulty, correct_answer, MODE, current_trick
@@ -26,9 +49,11 @@ def submit_answer():
         score += 1 if difficulty == 1 else 2 if difficulty == 2 else 3
         result = 'Correct! 😊'
         hint = None  # No trick needed for a correct answer
+        send_result_to_ip(1)  # Send 'correct' to the external IP
     else:
         score = max(0, score - 1)
         result = 'Incorrect! 😢'
+        send_result_to_ip(0)  # Send 'incorrect' to the external IP
 
         # If the answer is incorrect, always show a trick in DEMO MODE
         if MODE == "DEMO MODE":
@@ -107,8 +132,6 @@ def generate_valid_division_question(difficulty_level):
 
     current_trick = {'steps': trick_steps, 'animation': True}
     return question, correct_answer, current_trick
-
-
 
 # Function to generate questions testing divisibility by multiple divisors (e.g., 3 and 5, 5 and 9)
 def generate_multi_division_question(difficulty_level):
